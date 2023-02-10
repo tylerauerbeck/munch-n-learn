@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: no-resize 
+spec:
+  containers:
+  - command:
+    - sleep
+    - infinity 
+    image: bitnami/kubectl:latest
+    imagePullPolicy: Always
+    name: kubectl 
+    volumeMounts:
+      - mountPath: "/app"
+        name: app-data 
+  volumes:
+    - name: app-data 
+      persistentVolumeClaim:
+        claimName: no-resize-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: no-resize-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
