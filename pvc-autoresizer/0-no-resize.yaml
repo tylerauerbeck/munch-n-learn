@@ -3,6 +3,18 @@ kind: Pod
 metadata:
   name: no-resize 
 spec:
+  initContainers:
+  - name: fs-owner-change
+    image: busybox
+    command:
+    - chown
+    - "root:1001"
+    - "/app"
+    volumeMounts:
+    - mountPath: /app
+      name: app-data 
+  securityContext:
+    fsGroup: 1001 
   containers:
   - command:
     - sleep
@@ -10,6 +22,8 @@ spec:
     image: bitnami/kubectl:latest
     imagePullPolicy: Always
     name: kubectl 
+    securityContext:
+      runAsGroup: 1001
     volumeMounts:
       - mountPath: "/app"
         name: app-data 
